@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+		</style>
+		<style>
+            .modal {
+                display: none; /* Hidden by default */
+                position: fixed; /* Stay in place and float above the scene */
+                z-index: 2; /* Sit on top of everything */
+                left: 50%;
+                top: 55%;
+                transform: translate(-50%, -50%); /* Center the modal */
+                width: auto; /* Adjust based on content */
+                max-width: 600px; /* Maximum width */
+                padding: 20px;
+                box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+                background-color: #fefefe;
+                border-radius: 10px;
+            }
+
+            /* The Close Button */
+            .close {
+                color: #aaaaaa;
+                float: right;
+                font-size: 28px;
+                font-weight: bold;
+            }
+
+                .close:hover,
+                .close:focus {
+                    color: #000;
+                    text-decoration: none;
+                    cursor: pointer;
+                }
+		</style>
+		
+	</head>
+    <body>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      
+        <script type="module" src="/main.js"></script>
+
+        <div id="infoModal" class="modal">
+            <div class="modal-content">
+
+                <span class="close">&times;</span>
+                <p id="modalText">Info about the clicked object...</p>
+            </div>
+        </div>
+    </body>
+</html>
