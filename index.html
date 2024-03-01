@@ -59,6 +59,13 @@
         width: 50px;
       }
 
+      .square_content {
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        align-content: center;
+        align-self: center;
+      }
       .modal {
         display: none; /* Hidden by default */
         position: fixed; /* Stay in place and float above the scene */
@@ -67,13 +74,29 @@
         top: 55%;
         transform: translate(-50%, -50%); /* Center the modal */
         width: auto; /* Adjust based on content */
-        max-width: 600px; /* Maximum width */
+        max-width: 400px; /* Maximum width */
         padding: 20px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         background-color: #fefefe;
         border-radius: 10px;
       }
+      /* .modal-content {
+        display: flex;
+      } */
+      /* .modal-content > div {
+        background-color: #f1f1f1;
+        margin: 10px;
+        padding: 20px;
+      } */
 
+      /* .pallet-content {
+        display: flex;
+      } */
+      /* .modal > div {
+        background-color: #f1f1f1;
+        margin: 10px;
+        padding: 20px;
+      } */
       /* The Close Button */
       .close {
         color: #aaaaaa;
@@ -84,6 +107,79 @@
 
       .close:hover,
       .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+      }
+      .modal-second {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 3; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0); /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+      }
+      .modal-box-content {
+        position: relative;
+        background-color: #fefefe;
+        margin: auto;
+        padding: 0;
+        border: 1px solid #888;
+        width: 80%;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        -webkit-animation-name: animatetop;
+        -webkit-animation-duration: 0.4s;
+        animation-name: animatetop;
+        animation-duration: 0.4s;
+      }
+      .pallet-content {
+        padding: 2px 16px;
+      }
+
+      .modal-header {
+        padding: 2px 16px;
+        background-color: #5cb85c;
+        color: white;
+      }
+      /* Add Animation */
+      @-webkit-keyframes animatetop {
+        from {
+          top: -300px;
+          opacity: 0;
+        }
+        to {
+          top: 0;
+          opacity: 1;
+        }
+      }
+
+      @keyframes animatetop {
+        from {
+          top: -300px;
+          opacity: 0;
+        }
+        to {
+          top: 0;
+          opacity: 1;
+        }
+      }
+
+      /* The Close Button */
+      .close-second {
+        color: white;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close-second:hover,
+      .close-second:focus {
         color: #000;
         text-decoration: none;
         cursor: pointer;
@@ -107,50 +203,100 @@
           <div class="square_p3"></div>
           <br />
         </div> -->
-        <div clas="square_content">
-          <div class="square_p2"></div>
-          <div class="square_p1"></div>
+        <div class="square_content">
+          <button id="myBtn">
+            <div class="square_p3"></div>
+          </button>
           <br />
         </div>
-        <div class="Box1_content">
-          <p>Warehouse: Mets 4</p>
-          <p>Storage Type: Storage Dry</p>
-          <p>Pallet Content: Package Cardboard</p>
-          <p>Pallet Status: Full</p>
+        <div class="square_content">
+          <button id="myBtn">
+            <div class="square_p2"></div>
+          </button>
+          <br />
         </div>
-        <div class="Box2_content">
-          <p>Warehouse: Mets 4</p>
-          <p>Storage Type: Storage Dry</p>
-          <p>Pallet Content: Package Cardboard</p>
-          <p>Pallet Status: OverLoad</p>
+        <div class="square_content">
+          <button id="myBtn">
+            <div class="square_p1"></div>
+          </button>
+          <br />
         </div>
-        <div class="Box3_content">
-          <p>Warehouse: Mets 4</p>
-          <p>Storage Type: Storage Dry</p>
-          <p>Pallet Content: Package Cardboard</p>
-          <p>Pallet Status: OverLoad</p>
-        </div>
-        <div class="Box4_content">
-          <p>Warehouse: Mets 4</p>
-          <p>Storage Type: Storage Dry</p>
-          <p>Pallet Content: Package Cardboard</p>
-          <p>Pallet Status: Partial</p>
-        </div>
-        <div class="Box5_content">
-          <p>Warehouse: Mets 4</p>
-          <p>Storage Type: Storage Dry</p>
-          <p>Pallet Content: Package Cardboard</p>
-          <p>Pallet Status: Empty</p>
-        </div>
-        <div class="Box6_content">
-          <p>Warehouse: Mets 4</p>
-          <p>Storage Type: Storage Dry</p>
-          <p>Pallet Content: Package Cardboard</p>
-          <p>Pallet Status: Full</p>
-        </div>
+
         <span class="close">&times;</span>
         <p id="modalText">Info about the clicked object...</p>
       </div>
     </div>
+    <div class="modal-second" id="myModal">
+      <div class="modal-box-content">
+        <div class="modal-header">
+          <span class="close-second">&times;</span>
+        </div>
+        <div class="pallet_content">
+          <div class="Box1_content">
+            <p>Warehouse: Mets 4</p>
+            <p>Storage Type: Storage Dry</p>
+            <p>Pallet Content: Package Cardboard</p>
+            <p>Pallet Status: Full</p>
+          </div>
+          <div class="Box2_content">
+            <p>Warehouse: Mets 4</p>
+            <p>Storage Type: Storage Dry</p>
+            <p>Pallet Content: Package Cardboard</p>
+            <p>Pallet Status: OverLoad</p>
+          </div>
+          <div class="Box3_content">
+            <p>Warehouse: Mets 4</p>
+            <p>Storage Type: Storage Dry</p>
+            <p>Pallet Content: Package Cardboard</p>
+            <p>Pallet Status: OverLoad</p>
+          </div>
+          <div class="Box4_content">
+            <p>Warehouse: Mets 4</p>
+            <p>Storage Type: Storage Dry</p>
+            <p>Pallet Content: Package Cardboard</p>
+            <p>Pallet Status: Partial</p>
+          </div>
+          <div class="Box5_content">
+            <p>Warehouse: Mets 4</p>
+            <p>Storage Type: Storage Dry</p>
+            <p>Pallet Content: Package Cardboard</p>
+            <p>Pallet Status: Empty</p>
+          </div>
+          <div class="Box6_content">
+            <p>Warehouse: Mets 4</p>
+            <p>Storage Type: Storage Dry</p>
+            <p>Pallet Content: Package Cardboard</p>
+            <p>Pallet Status: Full</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      // Get the modal
+      var modal = document.getElementById("myModal");
+
+      // Get the button that opens the modal
+      var btn = document.getElementById("myBtn");
+
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close-second")[0];
+
+      // When the user clicks the button, open the modal
+      btn.onclick = function () {
+        modal.style.display = "block";
+      };
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
   </body>
 </html>

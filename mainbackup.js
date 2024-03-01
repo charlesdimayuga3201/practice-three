@@ -72,19 +72,118 @@ function onClick(event) {
   raycaster.setFromCamera(mouse, camera);
 
   const intersects = raycaster.intersectObjects(scene.children, true);
-  const validBoxPrefix = "Box";
-  const filteredIntersects = intersects.filter((intersect) =>
-    intersect.object.name.startsWith(validBoxPrefix)
-  );
+  const filteredIntersects = intersects.filter((intersect) => {
+    // Example: Check if the intersected object has a name
+    console.log("LOG: " + intersects.map((intersect) => intersect.object.name));
+    console.log("Intersects: ", intersects);
+    /*console.log("LOG Group Object"  + intersects.map(intersect => intersect.object.name));*/
 
-  console.log("LOG: " + intersects.map((intersect) => intersect.object.name));
-  console.log("Intersects: ", intersects);
+    return intersect.object.name;
+  });
+  //   console.log(intersects.map((intersect) => intersect.object.parent[0]));
   if (filteredIntersects.length > 0) {
+    console.log("Filtered: ", filteredIntersects[0].object.name);
     const object = filteredIntersects[0].object;
-    object.material.opacity = 0.5;
-    showModal(object.name);
+    if (
+      object.name === "Box1" ||
+      object.name === "Box1_1" ||
+      object.name === "Box1_2" ||
+      object.name === "Box2" ||
+      object.name === "Box2_1" ||
+      object.name === "Box2_2" ||
+      object.name === "Box3" ||
+      object.name === "Box3_1" ||
+      object.name === "Box3_2" ||
+      object.name === "Box4" ||
+      object.name === "Box4_1" ||
+      object.name === "Box4_2" ||
+      object.name === "Box5" ||
+      object.name === "Box5_1" ||
+      object.name === "Box5_2" ||
+      object.name === "Box6" ||
+      object.name === "Box6_1" ||
+      object.name === "Box6_2"
+    ) {
+      object.material.opacity = 0.5;
+      //   console.log("color: ", object.material.color);
+
+      const colorHex = object.material.color.getHexString();
+      const squareId = object.name.replace("Box", "");
+      // $(`.square_p${squareId}`).css("background-color", `#${colorHex}`);
+      // Apply this color to corresponding CSS square
+
+      //   if (object.name === "Box1" || object.name === "Box2") {
+      //     $(".square_p1,.square_p2").show(); // Show Square 1
+      //     if (object.name === "Box1") {
+      //       $(".square_p1").css("background-color", `#${colorHex}`);
+      //     } else if (object.name === "Box2") {
+      //       $(".square_p2").css("background-color", `#${colorHex}`);
+      //     }
+      //   } else if (object.name === "Box3" || object.name === "Box4") {
+      //     $(".square_p1,.square_p2").show(); // Show Square 1
+      //     if (object.name === "Box3") {
+      //       $(".square_p1").css("background-color", `#${colorHex}`);
+      //     } else if (object.name === "Box4") {
+      //       $(".square_p2").css("background-color", `#${colorHex}`);
+      //     }
+      //   } else if (object.name === "Box5" || object.name === "Box6") {
+      //     $(".square_p1,.square_p2").show(); // Show Square 1
+      //     if (object.name === "Box5") {
+      //       $(".square_p1").css("background-color", `#${colorHex}`);
+      //     } else if (object.name === "Box6") {
+      //       $(".square_p2").css("background-color", `#${colorHex}`);
+      //     }
+      //   }
+
+      // if (
+      //   object.name === "Box1" ||
+      //   object.name === "Box3" ||
+      //   object.name === "Box5"
+      // ) {
+      //   $(".square_p1,.square_p2").show(); // Show Square 1
+      //   $(".square_p1").css("background-color", `#${colorHex}`);
+      // } else if (
+      //   object.name === "Box2" ||
+      //   object.name === "Box4" ||
+      //   object.name === "Box6"
+      // ) {
+      //   $(".square_p1,.square_p2").show(); // Show Square 1
+      //   $(".square_p2").css("background-color", `#${colorHex}`);
+      // }
+
+      //   if (object.name === "Box1" || object.name === "Box2") {
+      //     $(".square_p1,.square_p2").show(); // Show Square 1
+
+      //     // $(`.square_p${squareId}`).css("background-color", `#${colorHex}`);
+      //     $(".square_p3,.square_p4,.square_p5,.square_p6").hide(); // Hide Square 2
+      //   } else if (object.name === "Box3" || object.name === "Box4") {
+      //     $(".square_p1,.square_p2,.square_p5,.square_p6").hide();
+
+      //     // $(`.square_p${squareId}`).css("background-color", `#${colorHex}`);
+      //     $(".square_p3,.square_p4").show();
+      //   } else if (object.name === "Box5" || object.name === "Box6") {
+      //     $(".square_p1,.square_p2,.square_p3,.square_p4").hide();
+
+      //     // $(`.square_p${squareId}`).css("background-color", `#${colorHex}`);
+      //     $(".square_p5,.square_p6").show();
+      //   }
+
+      showModal(object.name);
+    }
+    //const objectParent = filteredIntersects[0].object.parent;
+    //console.log("Parent: ", filteredIntersects[0].object.parent);
+    //if (objectParent.name = "pallet_racks2_4") {
+    //	objectParent.object.parent.color.set("red");
+    //	showModal(objectParent.name);
+    //}
   }
 }
+
+//	function showModal(name) {
+//		console.log("Selected Name: ", name);
+
+//		alert('Modal should be shown now, name: '+ name);
+//}
 
 function createLights() {
   const ambientLight = new AmbientLight("white", 1);
@@ -101,7 +200,6 @@ function showModal(name) {
   updateHTMLSquaresForBox(name);
   // Show the modal
   $("#infoModal").css("display", "block");
-  //   $("#infoModal").css("display", "flex");
 
   // When the user clicks on (x), close the modal
   $(".close").click(function () {
