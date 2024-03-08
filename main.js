@@ -97,7 +97,7 @@ function createLights() {
 const { ambientLight, mainLight } = createLights();
 
 function showModal(name) {
-  $("#modalText").text("Modal should be shown now, name: " + name);
+  // $("#modalText").text("Modal should be shown now, name: " + name);
   updateHTMLSquaresForBox(name);
   // Show the modal
   $("#infoModal").css("display", "block");
@@ -116,93 +116,41 @@ window.onclick = function (event) {
   }
 };
 
-// function updateHTMLSquares() {
-//   scene.traverse(function (child) {
-//     if (child instanceof THREE.Mesh && child.name.startsWith("Box")) {
-//       const colorHex = child.material.color.getHexString();
-//       const squareId = child.name.replace("Box", "");
-//       if (squareId >= 1 && squareId <= 6) {
-//         $(`.square_p${squareId}`).css("background-color", `#${colorHex}`);
-//       }
-//     }
-//   });
-// }
-
 function updateHTMLSquaresForBox(boxName) {
-  const square1Id = "square_p1";
-  const square2Id = "square_p2";
-  const square3Id = "square_p3";
+  btn1.onclick = function () {
+    displayBoxInfo(boxesToHandle[0]);
+  };
+  btn2.onclick = function () {
+    displayBoxInfo(boxesToHandle[1]);
+  };
+  btn3.onclick = function () {
+    displayBoxInfo(boxesToHandle[2]);
+  };
 
-  var colorHex1 = "";
-  let colorHex2 = "";
-  let colorHex3 = "";
+  var baseNameParts = boxName.split("_");
+  var baseBoxName = baseNameParts[0];
+  console.log("Parts", baseNameParts);
+  var boxesToHandle = [baseBoxName, `${baseBoxName}_1`, `${baseBoxName}_2`];
+  console.log("Boxes to handle", boxesToHandle);
+  console.log(
+    "Boxes Names",
+    baseBoxName,
+    `${baseBoxName}_1`,
+    `${baseBoxName}_2`
+  );
+  let colorHexes = boxesToHandle.map((name) => getColorHexString(name));
+  $("#modalText").text("Modal should be shown now, name: " + boxesToHandle);
+  console.log("Colors: ", colorHexes.join(", "));
 
-  switch (boxName) {
-    case "Box1":
-    case "Box1_1":
-    case "Box1_2":
-      colorHex1 = getColorHexString("Box1");
-      colorHex2 = getColorHexString("Box1_1");
-      colorHex3 = getColorHexString("Box1_2");
-      console.log("Color: ", colorHex1);
-      console.log("Color: ", colorHex2);
-
-      break;
-    case "Box2":
-    case "Box2_1":
-    case "Box2_2":
-      colorHex1 = getColorHexString("Box2");
-      colorHex2 = getColorHexString("Box2_1");
-      colorHex3 = getColorHexString("Box2_2");
-
-      break;
-    case "Box3":
-    case "Box3_1":
-    case "Box3_2":
-      colorHex1 = getColorHexString("Box3");
-      colorHex2 = getColorHexString("Box3_1");
-      colorHex3 = getColorHexString("Box3_2");
-
-      break;
-    case "Box4":
-    case "Box4_1":
-    case "Box4_2":
-      colorHex1 = getColorHexString("Box4");
-      colorHex2 = getColorHexString("Box4_1");
-      colorHex3 = getColorHexString("Box4_2");
-
-      break;
-    case "Box5":
-    case "Box5_1":
-    case "Box5_2":
-      colorHex1 = getColorHexString("Box5");
-      colorHex2 = getColorHexString("Box5_1");
-      colorHex3 = getColorHexString("Box5_2");
-
-      break;
-    case "Box6":
-    case "Box6_1":
-    case "Box6_2":
-      colorHex1 = getColorHexString("Box6");
-      colorHex2 = getColorHexString("Box6_1");
-      colorHex3 = getColorHexString("Box6_2");
-
-      break;
-    // Add cases for other boxes if needed
-    default:
-      // Handle other cases or do nothing
-      break;
-  }
-
-  // Update the background colors of the HTML div squares
-  $(`.${square1Id}`).css("background-color", `#${colorHex1}`);
-  $(`.${square2Id}`).css("background-color", `#${colorHex2}`);
-  $(`.${square3Id}`).css("background-color", `#${colorHex3}`);
+  colorHexes.forEach((colorHex, index) => {
+    $(`.square_p${index + 1}`).css("background-color", `#${colorHex}`);
+  });
 }
 
 function getColorHexString(boxName) {
   const object = scene.getObjectByName(boxName);
   console.log("BoxName: ", object);
+
   if (object) {
     return object.material.color.getHexString();
   }
@@ -215,4 +163,75 @@ function animation() {
   controls.update();
 
   renderer.render(scene, camera);
+}
+
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+
+var btn1 = document.getElementById("myBtn1");
+var btn2 = document.getElementById("myBtn2");
+var btn3 = document.getElementById("myBtn3");
+
+var boxes = document.querySelectorAll(".pallet_content > div");
+
+var span = document.getElementsByClassName("close-second")[0];
+
+function displayBoxInfo(classname) {
+  var boxContent = document.querySelector(`.${classname}`);
+  if (boxContent) {
+    // Hide all box contents
+    var allBoxContents = document.querySelectorAll(".pallet_content > div");
+    allBoxContents.forEach(function (box) {
+      box.style.display = "none";
+    });
+
+    // Show the selected box content
+    boxContent.style.display = "block";
+
+    // Display the modal
+    modal.style.display = "block";
+  }
+}
+span.onclick = function () {
+  modal.style.display = "none";
+};
+
+window.onclick = function (event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+};
+$(document).ready(function () {
+  $.ajax({
+    type: "GET",
+    url: "data.xml",
+    dataType: "xml",
+    success: function (xml) {
+      parseXml(xml);
+    },
+  });
+});
+
+function parseXml(xml) {
+  $(".pallet_content").empty();
+  console.log(xml);
+  $(xml)
+    .find("box")
+    .each(function () {
+      var classname = $(this).attr("class");
+      var warehouse = $(this).find("warehouse").text();
+      var storageType = $(this).find("storageType").text();
+      var palletContent = $(this).find("palletContent").text();
+      var palletStatus = $(this).find("palletStatus").text();
+
+      $(".pallet_content").append(`
+          <div class="${classname}" style="display: none;">
+            <p>Warehouse: ${warehouse}</p>
+            <p>Storage Type: ${storageType}</p>
+            <p>Pallet Content: ${palletContent}</p>
+            <p>Pallet Status: ${palletStatus}</p>
+          </div>
+        `);
+    });
 }

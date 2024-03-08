@@ -9,11 +9,25 @@
       }
     </style>
     <style>
+      .pallet_content {
+        justify-content: center;
+        align-items: center;
+        display: flex;
+        align-content: center;
+        align-self: center;
+      }
+      /* .Box1_content {
+              display: inline-flex; 
+              justify-content: center;
+              align-items: center;
+              align-self: center;
+              align-content: center;
+            } */
       .square_p1 {
         display: inline-flex;
         justify-content: center;
         align-items: center;
-        outline: 1px solid black;
+        /* outline: 1px solid black; */
         height: 50px;
         width: 50px;
       }
@@ -22,7 +36,7 @@
         display: inline-flex;
         justify-content: center;
         align-items: center;
-        outline: 1px solid black;
+        /* outline: 1px solid black; */
         height: 50px;
         width: 50px;
       }
@@ -30,7 +44,7 @@
         display: inline-flex;
         justify-content: center;
         align-items: center;
-        outline: 1px solid black;
+        /* outline: 1px solid black; */
         height: 50px;
         width: 50px;
       }
@@ -81,22 +95,22 @@
         border-radius: 10px;
       }
       /* .modal-content {
-        display: flex;
-      } */
+              display: flex;
+            } */
       /* .modal-content > div {
-        background-color: #f1f1f1;
-        margin: 10px;
-        padding: 20px;
-      } */
+              background-color: #f1f1f1;
+              margin: 10px;
+              padding: 20px;
+            } */
 
       /* .pallet-content {
-        display: flex;
-      } */
+              display: flex;
+            } */
       /* .modal > div {
-        background-color: #f1f1f1;
-        margin: 10px;
-        padding: 20px;
-      } */
+              background-color: #f1f1f1;
+              margin: 10px;
+              padding: 20px;
+            } */
       /* The Close Button */
       .close {
         color: #aaaaaa;
@@ -115,7 +129,7 @@
         display: none; /* Hidden by default */
         position: fixed; /* Stay in place */
         z-index: 3; /* Sit on top */
-        padding-top: 100px; /* Location of the box */
+        padding-top: 180px;
         left: 0;
         top: 0;
         width: 100%; /* Full width */
@@ -130,52 +144,21 @@
         margin: auto;
         padding: 0;
         border: 1px solid #888;
-        width: 80%;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
-          0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        -webkit-animation-name: animatetop;
-        -webkit-animation-duration: 0.4s;
-        animation-name: animatetop;
-        animation-duration: 0.4s;
+        width: 27%;
+        /* height: 90%; */
+        border-radius: 6px;
       }
       .pallet-content {
         padding: 2px 16px;
       }
 
-      .modal-header {
-        padding: 2px 16px;
-        background-color: #5cb85c;
-        color: white;
-      }
-      /* Add Animation */
-      @-webkit-keyframes animatetop {
-        from {
-          top: -300px;
-          opacity: 0;
-        }
-        to {
-          top: 0;
-          opacity: 1;
-        }
-      }
-
-      @keyframes animatetop {
-        from {
-          top: -300px;
-          opacity: 0;
-        }
-        to {
-          top: 0;
-          opacity: 1;
-        }
-      }
-
       /* The Close Button */
       .close-second {
-        color: white;
+        color: #aaaaaa;
         float: right;
         font-size: 28px;
         font-weight: bold;
+        padding-right: 10px;
       }
 
       .close-second:hover,
@@ -187,116 +170,173 @@
     </style>
   </head>
   <body>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-
     <script type="module" src="/main.js"></script>
 
     <div id="infoModal" class="modal">
       <div class="modal-content">
         <!-- <div clas="square_content">
-          <div class="square_p6"></div>
-          <div class="square_p5"></div>
-          <br />
-        </div>
-        <div clas="square_content">
-          <div class="square_p4"></div>
-          <div class="square_p3"></div>
-          <br />
-        </div> -->
+                <div class="square_p6"></div>
+                <div class="square_p5"></div>
+                <br />
+              </div>
+              <div clas="square_content">
+                <div class="square_p4"></div>
+                <div class="square_p3"></div>
+                <br />
+              </div> -->
         <div class="square_content">
-          <button id="myBtn">
+          <button id="myBtn3">
             <div class="square_p3"></div>
           </button>
           <br />
         </div>
         <div class="square_content">
-          <button id="myBtn">
+          <button id="myBtn2">
             <div class="square_p2"></div>
           </button>
           <br />
         </div>
         <div class="square_content">
-          <button id="myBtn">
+          <button id="myBtn1">
             <div class="square_p1"></div>
           </button>
           <br />
         </div>
 
         <span class="close">&times;</span>
-        <p id="modalText">Info about the clicked object...</p>
+        <p id="modalText">Click the specific Box to show the details...</p>
       </div>
     </div>
     <div class="modal-second" id="myModal">
       <div class="modal-box-content">
-        <div class="modal-header">
-          <span class="close-second">&times;</span>
-        </div>
+        <span class="close-second">&times;</span>
+
         <div class="pallet_content">
-          <div class="Box1_content">
-            <p>Warehouse: Mets 4</p>
-            <p>Storage Type: Storage Dry</p>
-            <p>Pallet Content: Package Cardboard</p>
-            <p>Pallet Status: Full</p>
+          <!-- <div class="Box1_content">
+            <p>Warehouse:</p>
+            <p>Storage Type:</p>
+            <p>Pallet Content:</p>
+            <p>Pallet Status:</p>
           </div>
           <div class="Box2_content">
-            <p>Warehouse: Mets 4</p>
-            <p>Storage Type: Storage Dry</p>
-            <p>Pallet Content: Package Cardboard</p>
-            <p>Pallet Status: OverLoad</p>
+            <p>Warehouse:</p>
+            <p>Storage Type:</p>
+            <p>Pallet Content:</p>
+            <p>Pallet Status:</p>
           </div>
           <div class="Box3_content">
-            <p>Warehouse: Mets 4</p>
-            <p>Storage Type: Storage Dry</p>
-            <p>Pallet Content: Package Cardboard</p>
-            <p>Pallet Status: OverLoad</p>
-          </div>
-          <div class="Box4_content">
-            <p>Warehouse: Mets 4</p>
-            <p>Storage Type: Storage Dry</p>
-            <p>Pallet Content: Package Cardboard</p>
-            <p>Pallet Status: Partial</p>
-          </div>
-          <div class="Box5_content">
-            <p>Warehouse: Mets 4</p>
-            <p>Storage Type: Storage Dry</p>
-            <p>Pallet Content: Package Cardboard</p>
-            <p>Pallet Status: Empty</p>
-          </div>
-          <div class="Box6_content">
-            <p>Warehouse: Mets 4</p>
-            <p>Storage Type: Storage Dry</p>
-            <p>Pallet Content: Package Cardboard</p>
-            <p>Pallet Status: Full</p>
-          </div>
+            <p>Warehouse:</p>
+            <p>Storage Type:</p>
+            <p>Pallet Content:</p>
+            <p>Pallet Status:</p>
+          </div> -->
+          <!-- <div class="Box4_content">
+                <p>Warehouse: Mets 4</p>
+                <p>Storage Type: Storage Dry</p>
+                <p>Pallet Content: Package Cardboard</p>
+                <p>Pallet Status: Partial</p>
+              </div>
+              <div class="Box5_content">
+                <p>Warehouse: Mets 4</p>
+                <p>Storage Type: Storage Dry</p>
+                <p>Pallet Content: Package Cardboard</p>
+                <p>Pallet Status: Empty</p>
+              </div>
+              <div class="Box6_content">
+                <p>Warehouse: Mets 4</p>
+                <p>Storage Type: Storage Dry</p>
+                <p>Pallet Content: Package Cardboard</p>
+                <p>Pallet Status: Full</p>
+              </div> -->
         </div>
       </div>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!--  
     <script>
       // Get the modal
       var modal = document.getElementById("myModal");
 
       // Get the button that opens the modal
-      var btn = document.getElementById("myBtn");
 
-      // Get the <span> element that closes the modal
+      var btn1 = document.getElementById("myBtn1");
+      var btn2 = document.getElementById("myBtn2");
+      var btn3 = document.getElementById("myBtn3");
+
+      var boxes = document.querySelectorAll(".pallet_content > div");
+
       var span = document.getElementsByClassName("close-second")[0];
 
-      // When the user clicks the button, open the modal
-      btn.onclick = function () {
-        modal.style.display = "block";
+      btn1.onclick = function () {
+        displayBoxInfo("1");
+      };
+      btn2.onclick = function () {
+        displayBoxInfo("1_1");
+      };
+      btn3.onclick = function () {
+        displayBoxInfo("1_2");
       };
 
-      // When the user clicks on <span> (x), close the modal
+      function displayBoxInfo(id) {
+        var boxContent = document.querySelector(`.Box${id}_content`);
+        if (boxContent) {
+          // Hide all box contents
+          var allBoxContents = document.querySelectorAll(
+            ".pallet_content > div"
+          );
+          allBoxContents.forEach(function (box) {
+            box.style.display = "none";
+          });
+
+          // Show the selected box content
+          boxContent.style.display = "block";
+
+          // Display the modal
+          modal.style.display = "block";
+        }
+      }
       span.onclick = function () {
         modal.style.display = "none";
       };
 
-      // When the user clicks anywhere outside of the modal, close it
       window.onclick = function (event) {
         if (event.target == modal) {
           modal.style.display = "none";
         }
       };
-    </script>
+      $(document).ready(function () {
+        $.ajax({
+          type: "GET",
+          url: "data.xml",
+          dataType: "xml",
+          success: function (xml) {
+            parseXml(xml);
+          },
+        });
+      });
+
+      function parseXml(xml) {
+        $(".pallet_content").empty();
+        console.log(xml);
+        $(xml)
+          .find("box")
+          .each(function () {
+            var id = $(this).attr("id");
+            var warehouse = $(this).find("warehouse").text();
+            var storageType = $(this).find("storageType").text();
+            var palletContent = $(this).find("palletContent").text();
+            var palletStatus = $(this).find("palletStatus").text();
+
+            $(".pallet_content").append(`
+          <div class="Box${id}_content" style="display: none;">
+            <p>Warehouse: ${warehouse}</p>
+            <p>Storage Type: ${storageType}</p>
+            <p>Pallet Content: ${palletContent}</p>
+            <p>Pallet Status: ${palletStatus}</p>
+          </div>
+        `);
+          });
+      }
+    </script> -->
   </body>
 </html>
