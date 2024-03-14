@@ -40,6 +40,7 @@ loader.load(
     gltf.scenes; // Array<THREE.Group>
     gltf.cameras; // Array<THREE.Camera>
     gltf.asset; // Object
+    parseXml(xml);
   },
   // called while loading is progressing
   function (xhr) {
@@ -81,11 +82,11 @@ function onClick(event) {
   console.log("Intersects: ", intersects);
   if (filteredIntersects.length > 0) {
     const object = filteredIntersects[0].object;
-    object.material.opacity = 0.5;
+    // object.material.opacity = 0.5;
     showModal(object.name);
   }
 }
-
+const { ambientLight, mainLight } = createLights();
 function createLights() {
   const ambientLight = new AmbientLight("white", 1);
 
@@ -94,22 +95,19 @@ function createLights() {
 
   return { ambientLight, mainLight };
 }
-const { ambientLight, mainLight } = createLights();
 
 function showModal(name) {
   // $("#modalText").text("Modal should be shown now, name: " + name);
   updateHTMLSquaresForBox(name);
-  // Show the modal
+
   $("#infoModal").css("display", "block");
   //   $("#infoModal").css("display", "flex");
 
-  // When the user clicks on (x), close the modal
   $(".close").click(function () {
     $("#infoModal").css("display", "none");
   });
 }
 
-// Optional: Close the modal if the user clicks outside of it
 window.onclick = function (event) {
   if ($(event.target).is("#infoModal")) {
     $("#infoModal").css("display", "none");
@@ -233,5 +231,33 @@ function parseXml(xml) {
             <p>Pallet Status: ${palletStatus}</p>
           </div>
         `);
+      updateBoxColorInThreeJS(classname, palletStatus);
     });
+}
+
+function updateBoxColorInThreeJS(classname, palletStatus) {
+  const boxObject = scene.getObjectByName(classname);
+  if (boxObject) {
+    switch (palletStatus) {
+      case "Empty":
+        boxObject.material.color.set("white");
+        boxObject.material.opacity = 0;
+        break;
+
+      case "Partial":
+        boxObject.material.color.set("blue");
+        break;
+
+      case "Full":
+        boxObject.material.color.set("green");
+        break;
+
+      case "Overload":
+        boxObject.material.color.set("red");
+        break;
+
+      default:
+        break;
+    }
+  }
 }
