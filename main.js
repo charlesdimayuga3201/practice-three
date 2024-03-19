@@ -26,7 +26,7 @@ loader.setDRACOLoader(dracoLoader);
 animation;
 loader.load(
   // resource URL
-  "/met4racks.glb",
+  "/bmet4racks.glb",
   // called when the resource is loaded
   function (gltf) {
     // const root = gltf.scene;
@@ -35,12 +35,13 @@ loader.load(
     scene.add(gltf.scene);
     console.log(gltf.scene);
 
-    gltf.animations; // Array<THREE.AnimationClip>
-    gltf.scene; // THREE.Group
-    gltf.scenes; // Array<THREE.Group>
-    gltf.cameras; // Array<THREE.Camera>
-    gltf.asset; // Object
-    parseXml(xml);
+    // gltf.animations; // Array<THREE.AnimationClip>
+    // gltf.scene; // THREE.Group
+    // gltf.scenes; // Array<THREE.Group>
+    // gltf.cameras; // Array<THREE.Camera>
+    // gltf.asset; // Object
+
+    // parseXml(xml);
   },
   // called while loading is progressing
   function (xhr) {
@@ -48,7 +49,7 @@ loader.load(
   },
   // called when loading has errors
   function (error) {
-    console.log("An error happened");
+    console.log(error);
   }
 );
 
@@ -114,7 +115,53 @@ window.onclick = function (event) {
   }
 };
 
+// function updateHTMLSquaresForBox(boxName) {
+//   btn1.onclick = function () {
+//     displayBoxInfo(boxesToHandle[0]);
+//   };
+//   btn2.onclick = function () {
+//     displayBoxInfo(boxesToHandle[1]);
+//   };
+//   btn3.onclick = function () {
+//     displayBoxInfo(boxesToHandle[2]);
+//   };
+
+//   var baseNameParts = boxName.split("_");
+//   var baseBoxName = baseNameParts[0];
+//   console.log("Parts", baseNameParts);
+//   var boxesToHandle = [baseBoxName, `${baseBoxName}_1`, `${baseBoxName}_2`];
+//   console.log("Boxes to handle", boxesToHandle);
+//   console.log(
+//     "Boxes Names",
+//     baseBoxName,
+//     `${baseBoxName}_1`,
+//     `${baseBoxName}_2`
+//   );
+//   let colorHexes = boxesToHandle.map((name) => getColorHexString(name));
+//   $("#modalText").text("Modal should be shown now, name: " + boxesToHandle);
+
+//   // $(".pallet1").text(boxesToHandle[0]);
+//   // $(".pallet2").text(boxesToHandle[1]);
+//   // $(".pallet3").text(boxesToHandle[2]);
+//   console.log("Colors: ", colorHexes.join(", "));
+
+//   colorHexes.forEach((colorHex, index) => {
+//     $(`.square_p${index + 1}`).css("background-color", `#${colorHex}`);
+//   });
+// }
+
+// function getColorHexString(boxName) {
+//   const object = scene.getObjectByName(boxName);
+//   console.log("BoxName: ", object);
+
+//   if (object) {
+//     return object.material.color.getHexString();
+//   }
+//   return "";
+// }
+
 function updateHTMLSquaresForBox(boxName) {
+  // Other logic remains the same
   btn1.onclick = function () {
     displayBoxInfo(boxesToHandle[0]);
   };
@@ -124,35 +171,30 @@ function updateHTMLSquaresForBox(boxName) {
   btn3.onclick = function () {
     displayBoxInfo(boxesToHandle[2]);
   };
-
+  // Use the stored XML data to set button colors
   var baseNameParts = boxName.split("_");
   var baseBoxName = baseNameParts[0];
-  console.log("Parts", baseNameParts);
   var boxesToHandle = [baseBoxName, `${baseBoxName}_1`, `${baseBoxName}_2`];
-  console.log("Boxes to handle", boxesToHandle);
-  console.log(
-    "Boxes Names",
-    baseBoxName,
-    `${baseBoxName}_1`,
-    `${baseBoxName}_2`
-  );
-  let colorHexes = boxesToHandle.map((name) => getColorHexString(name));
   $("#modalText").text("Modal should be shown now, name: " + boxesToHandle);
-  console.log("Colors: ", colorHexes.join(", "));
-
-  colorHexes.forEach((colorHex, index) => {
-    $(`.square_p${index + 1}`).css("background-color", `#${colorHex}`);
+  boxesToHandle.forEach((name, index) => {
+    // Assuming you have a function to map status to color
+    let status = boxDataFromXML[name];
+    let color = statusToColor(status); // You need to define statusToColor based on your color logic
+    $(`.square_p${index + 1}`).css("background-color", color);
   });
 }
 
-function getColorHexString(boxName) {
-  const object = scene.getObjectByName(boxName);
-  console.log("BoxName: ", object);
-
-  if (object) {
-    return object.material.color.getHexString();
+// Example statusToColor function (you need to implement this based on your requirements)
+function statusToColor(status) {
+  switch (status) {
+    case "Full":
+      return "green"; // Green
+    case "Overload":
+      return "red"; // Blue
+    // Add other cases as needed
+    case "Empty":
+      return "white"; // White
   }
-  return "";
 }
 
 function animation() {
@@ -211,6 +253,7 @@ $(document).ready(function () {
   });
 });
 
+let boxDataFromXML = {};
 function parseXml(xml) {
   $(".pallet_content").empty();
   console.log(xml);
@@ -222,7 +265,7 @@ function parseXml(xml) {
       var storageType = $(this).find("storageType").text();
       var palletContent = $(this).find("palletContent").text();
       var palletStatus = $(this).find("palletStatus").text();
-
+      boxDataFromXML[classname] = palletStatus;
       $(".pallet_content").append(`
           <div class="${classname}" style="display: none;">
             <p>Warehouse: ${warehouse}</p>
@@ -231,33 +274,150 @@ function parseXml(xml) {
             <p>Pallet Status: ${palletStatus}</p>
           </div>
         `);
-      updateBoxColorInThreeJS(classname, palletStatus);
+
+      // updateBoxColorInThreeJS(classname, palletStatus);
     });
 }
 
-function updateBoxColorInThreeJS(classname, palletStatus) {
-  const boxObject = scene.getObjectByName(classname);
-  if (boxObject) {
-    switch (palletStatus) {
-      case "Empty":
-        boxObject.material.color.set("white");
-        boxObject.material.opacity = 0;
-        break;
+// function updateBoxColorInThreeJS(classname, palletStatus) {
+//   const boxObject = scene.getObjectByName(classname);
 
-      case "Partial":
-        boxObject.material.color.set("blue");
-        break;
+//   if (boxObject) {
+//     switch (palletStatus) {
+//       case "Empty":
+//         boxObject.material.color.set("white");
+//         boxObject.material.opacity = 0.5;
+//         break;
 
-      case "Full":
-        boxObject.material.color.set("green");
-        break;
+//       case "Partial":
+//         boxObject.material.color.set("blue");
+//         break;
 
-      case "Overload":
-        boxObject.material.color.set("red");
-        break;
+//       case "Full":
+//         boxObject.material.color.set("green");
+//         break;
 
-      default:
-        break;
+//       case "Overload":
+//         boxObject.material.color.set("red");
+//         break;
+
+//       default:
+//         break;
+//     }
+//   }
+// }
+
+// SINGLE HOVER
+// let hoveredObj = null;
+// let originalColor = new THREE.Color();
+// function onMouseMove(event) {
+//   mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+//   mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+
+//   raycaster.setFromCamera(mouse, camera);
+
+//   const intersects = raycaster.intersectObjects(scene.children, true);
+//   const validBoxPrefix = "Box";
+//   const filteredIntersects = intersects.filter((intersect) =>
+//     intersect.object.name.startsWith(validBoxPrefix)
+//   );
+
+//   if (
+//     hoveredObj &&
+//     (!filteredIntersects.length || hoveredObj !== filteredIntersects[0].object)
+//   ) {
+//     // Restore original color if not hovering over the same object
+//     hoveredObj.material.color.copy(originalColor);
+//     hoveredObj = null;
+//   }
+
+//   if (filteredIntersects.length > 0) {
+//     const intersected = filteredIntersects[0].object;
+
+//     if (hoveredObj !== intersected) {
+//       hoveredObj = intersected;
+//       originalColor.copy(intersected.material.color);
+//       // showModal(intersected.name);
+//       // Change color based on pallet status
+
+//       // Assuming you have a function to map status to color
+//       const palletStatus = boxDataFromXML[hoveredObj.name];
+//       const color = statusToColor(palletStatus); // Assuming statusToColor function is defined
+//       hoveredObj.material.color.set(color);
+//     }
+//   }
+// }
+
+// renderer.domElement.addEventListener("mousemove", onMouseMove);
+
+// MULTIPLE HOVER
+
+let hoveredObj = null;
+
+let boxesInRow = [];
+function onMouseMove(event) {
+  mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+  mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  const intersects = raycaster.intersectObjects(scene.children, true);
+  const validBoxPrefix = "Box";
+  const filteredIntersects = intersects.filter((intersect) =>
+    intersect.object.name.startsWith(validBoxPrefix)
+  );
+
+  if (hoveredObj) {
+    // Check if we're still hovering over the same object or any of its related boxes
+    if (
+      !filteredIntersects.length ||
+      !boxesInRow.includes(filteredIntersects[0].object)
+    ) {
+      // Restore original colors to all related boxes and clear the list
+      boxesInRow.forEach((box) => {
+        if (box.originalColor) box.material.color.copy(box.originalColor);
+      });
+      boxesInRow = [];
+      hoveredObj = null; // Clear the hovered object since we're no longer hovering over it
     }
   }
+
+  if (
+    filteredIntersects.length > 0 &&
+    (!hoveredObj || !boxesInRow.includes(filteredIntersects[0].object))
+  ) {
+    const intersected = filteredIntersects[0].object;
+
+    // Clear previous boxesInRow if moving to a new row
+    if (hoveredObj !== intersected) {
+      boxesInRow.forEach((box) => {
+        if (box.originalColor) box.material.color.copy(box.originalColor);
+      });
+      boxesInRow = [];
+    }
+
+    hoveredObj = intersected;
+    var intersectedRow = intersected.name.split("_")[0];
+    var boxesHandle = [
+      intersectedRow,
+      `${intersectedRow}_1`,
+      `${intersectedRow}_2`,
+    ];
+    boxesHandle.forEach((boxName) => {
+      let box = scene.getObjectByName(boxName);
+      if (box) {
+        boxesInRow.push(box);
+        // Store original color if it hasn't been stored yet
+        if (!box.originalColor) {
+          box.originalColor = box.material.color.clone();
+        }
+        // Optionally change the color, e.g., to indicate hover
+        const palletStatus = boxDataFromXML[box.name];
+        const color = statusToColor(palletStatus); // Assumes statusToColor function is defined
+        box.material.color.set(color);
+      }
+    });
+  }
 }
+
+renderer.domElement.addEventListener("mousemove", onMouseMove);
