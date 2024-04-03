@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 
@@ -16,8 +16,8 @@ const scene = new THREE.Scene();
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(width, height);
 renderer.setAnimationLoop(animation);
-document.body.appendChild(renderer.domElement);
-
+// document.body.appendChild(renderer.domElement);
+document.getElementById("webgl-container").appendChild(renderer.domElement);
 const loader = new GLTFLoader();
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath("/examples/jsm/libs/draco/");
@@ -102,18 +102,12 @@ function showModal(name) {
   updateHTMLSquaresForBox(name);
 
   $("#infoModal").css("display", "block");
-  //   $("#infoModal").css("display", "flex");
+  // $("#infoModal").css("display", "flex");
 
-  $(".close").click(function () {
+  $(document).on("click", ".close", function () {
     $("#infoModal").css("display", "none");
   });
 }
-
-window.onclick = function (event) {
-  if ($(event.target).is("#infoModal")) {
-    $("#infoModal").css("display", "none");
-  }
-};
 
 // function updateHTMLSquaresForBox(boxName) {
 //   btn1.onclick = function () {
@@ -159,44 +153,6 @@ window.onclick = function (event) {
 //   }
 //   return "";
 // }
-
-function updateHTMLSquaresForBox(boxName) {
-  // Other logic remains the same
-  btn1.onclick = function () {
-    displayBoxInfo(boxesToHandle[0]);
-  };
-  btn2.onclick = function () {
-    displayBoxInfo(boxesToHandle[1]);
-  };
-  btn3.onclick = function () {
-    displayBoxInfo(boxesToHandle[2]);
-  };
-  // Use the stored XML data to set button colors
-  var baseNameParts = boxName.split("_");
-  var baseBoxName = baseNameParts[0];
-  var boxesToHandle = [baseBoxName, `${baseBoxName}_1`, `${baseBoxName}_2`];
-  $("#modalText").text("Modal should be shown now, name: " + boxesToHandle);
-  boxesToHandle.forEach((name, index) => {
-    // Assuming you have a function to map status to color
-    let status = boxDataFromXML[name];
-    let color = statusToColor(status); // You need to define statusToColor based on your color logic
-    $(`.square_p${index + 1}`).css("background-color", color);
-  });
-}
-
-// Example statusToColor function (you need to implement this based on your requirements)
-function statusToColor(status) {
-  switch (status) {
-    case "Full":
-      return "green"; // Green
-    case "Overload":
-      return "red"; // Blue
-    // Add other cases as needed
-    case "Empty":
-      return "white"; // White
-  }
-}
-
 function animation() {
   scene.add(ambientLight, mainLight);
 
@@ -204,17 +160,70 @@ function animation() {
 
   renderer.render(scene, camera);
 }
+function updateHTMLSquaresForBox(boxName) {
+  // Extract the base box name
+  var baseBoxName = boxName.split("_")[0];
+  // Initialize the boxesToHandle array
+  var boxesToHandle = [];
+
+  // Dynamically generate boxesToHandle with the base box and two numbered boxes
+  for (let i = 0; i < 3; i++) {
+    boxesToHandle.push(i === 0 ? baseBoxName : `${baseBoxName}_${i}`);
+  }
+
+  // Update modal text using jQuery
+  $("#modalText").text(
+    "Modal should be shown now, name: " + boxesToHandle.join(", ")
+  );
+
+  // Dynamically set colors based on box status
+  boxesToHandle.forEach((name, index) => {
+    let status = boxDataFromXML[name]; // Assuming you have a way to get the box's status
+    let color = statusToColor(status); // Convert status to color
+    console.log("Status Color: " + color);
+
+    // Assign onclick and onmouseover for each button using jQuery
+    $(`#myBtn${index + 1}`)
+      .off("click mouseover mouseout") // Remove previous event handlers to prevent duplication
+      .on("click", function () {
+        displayBoxInfo(name);
+      })
+      .on("mouseover", function () {
+        const box = scene.getObjectByName(name);
+        console.log("Object: " + name, "Color: " + color);
+        box.material.color.set(color);
+      })
+      .on("mouseout", function () {
+        const box = scene.getObjectByName(name);
+        box.material.color.set("black");
+      });
+
+    console.log(
+      "Status: " + status,
+      "Color:" + color,
+      "boxDatafromXML:" + boxDataFromXML[name]
+    );
+
+    // Update square color using jQuery
+    $(`.square_p${index + 1}`).css("background-color", color);
+  });
+}
+// Example implementation of statusToColor, adjust as per your requirements
+function statusToColor(status) {
+  switch (status) {
+    case "Full":
+      return "green";
+    case "Overload":
+      return "red";
+    case "Empty":
+      return "white";
+    // Add more cases as necessary
+    default:
+      return "gray"; // A default case for unexpected statuses
+  }
+}
 
 var modal = document.getElementById("myModal");
-
-// Get the button that opens the modal
-
-var btn1 = document.getElementById("myBtn1");
-var btn2 = document.getElementById("myBtn2");
-var btn3 = document.getElementById("myBtn3");
-
-var boxes = document.querySelectorAll(".pallet_content > div");
-
 var span = document.getElementsByClassName("close-second")[0];
 
 function displayBoxInfo(classname) {
@@ -242,15 +251,15 @@ window.onclick = function (event) {
     modal.style.display = "none";
   }
 };
-$(document).ready(function () {
-  $.ajax({
-    type: "GET",
-    url: "data.xml",
-    dataType: "xml",
-    success: function (xml) {
+$(function () {
+  fetch("data.xml")
+    .then((response) => response.text())
+    .then((data) => {
+      const parser = new DOMParser();
+      const xml = parser.parseFromString(data, "application/xml");
       parseXml(xml);
-    },
-  });
+    })
+    .catch((error) => console.error("Error fetching the XML:", error));
 });
 
 let boxDataFromXML = {};
@@ -268,12 +277,12 @@ function parseXml(xml) {
       boxDataFromXML[classname] = palletStatus;
       $(".pallet_content").append(`
           <div class="${classname}" style="display: none;">
-            <p>Warehouse: ${warehouse}</p>
-            <p>Storage Type: ${storageType}</p>
-            <p>Pallet Content: ${palletContent}</p>
-            <p>Pallet Status: ${palletStatus}</p>
+              <p>Warehouse: ${warehouse}</p>
+              <p>Storage Type: ${storageType}</p>
+              <p>Pallet Content: ${palletContent}</p>
+              <p>Pallet Status: ${palletStatus}</p>
           </div>
-        `);
+      `);
 
       // updateBoxColorInThreeJS(classname, palletStatus);
     });
@@ -355,6 +364,73 @@ function parseXml(xml) {
 let hoveredObj = null;
 
 let boxesInRow = [];
+// function onMouseMove(event) {
+//   mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+//   mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+
+//   raycaster.setFromCamera(mouse, camera);
+
+//   const intersects = raycaster.intersectObjects(scene.children, true);
+//   const validBoxPrefix = "Box";
+//   const filteredIntersects = intersects.filter((intersect) =>
+//     intersect.object.name.startsWith(validBoxPrefix)
+//   );
+
+//   if (hoveredObj) {
+//     // Check if we're still hovering over the same object or any of its related boxes
+//     if (
+//       !filteredIntersects.length ||
+//       !boxesInRow.includes(filteredIntersects[0].object)
+//     ) {
+//       // Restore original colors to all related boxes and clear the list
+//       boxesInRow.forEach((box) => {
+//         if (box.originalColor) box.material.color.copy(box.originalColor);
+//       });
+//       boxesInRow = [];
+//       hoveredObj = null; // Clear the hovered object since we're no longer hovering over it
+//     }
+//   }
+
+//   if (
+//     filteredIntersects.length > 0 &&
+//     (!hoveredObj || !boxesInRow.includes(filteredIntersects[0].object))
+//   ) {
+//     const intersected = filteredIntersects[0].object;
+
+//     // Clear previous boxesInRow if moving to a new row
+//     if (hoveredObj !== intersected) {
+//       boxesInRow.forEach((box) => {
+//         if (box.originalColor) box.material.color.copy(box.originalColor);
+//       });
+//       boxesInRow = [];
+//     }
+
+//     hoveredObj = intersected;
+//     var intersectedRow = intersected.name.split("_")[0];
+//     var boxesHandle = [
+//       intersectedRow,
+//       `${intersectedRow}_1`,
+//       `${intersectedRow}_2`,
+//     ];
+//     boxesHandle.forEach((boxName) => {
+//       let box = scene.getObjectByName(boxName);
+//       if (box) {
+//         boxesInRow.push(box);
+//         // Store original color if it hasn't been stored yet
+//         if (!box.originalColor) {
+//           box.originalColor = box.material.color.clone();
+//         }
+//         // Optionally change the color, e.g., to indicate hover
+//         // showModal(intersected.name);
+//         const palletStatus = boxDataFromXML[box.name];
+//         const color = statusToColor(palletStatus); // Assumes statusToColor function is defined
+//         box.material.color.set(color);
+//       }
+//     });
+//   }
+// }
+
+// For Looop
 function onMouseMove(event) {
   mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
   mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
@@ -368,17 +444,15 @@ function onMouseMove(event) {
   );
 
   if (hoveredObj) {
-    // Check if we're still hovering over the same object or any of its related boxes
     if (
       !filteredIntersects.length ||
       !boxesInRow.includes(filteredIntersects[0].object)
     ) {
-      // Restore original colors to all related boxes and clear the list
       boxesInRow.forEach((box) => {
         if (box.originalColor) box.material.color.copy(box.originalColor);
       });
       boxesInRow = [];
-      hoveredObj = null; // Clear the hovered object since we're no longer hovering over it
+      hoveredObj = null;
     }
   }
 
@@ -388,7 +462,6 @@ function onMouseMove(event) {
   ) {
     const intersected = filteredIntersects[0].object;
 
-    // Clear previous boxesInRow if moving to a new row
     if (hoveredObj !== intersected) {
       boxesInRow.forEach((box) => {
         if (box.originalColor) box.material.color.copy(box.originalColor);
@@ -398,26 +471,31 @@ function onMouseMove(event) {
 
     hoveredObj = intersected;
     var intersectedRow = intersected.name.split("_")[0];
-    var boxesHandle = [
-      intersectedRow,
-      `${intersectedRow}_1`,
-      `${intersectedRow}_2`,
-    ];
-    boxesHandle.forEach((boxName) => {
+
+    // Assuming intersectedRow itself should be included
+    boxesInRow.push(intersected);
+    if (!intersected.originalColor) {
+      intersected.originalColor = intersected.material.color.clone();
+    }
+    intersected.material.color.set(
+      statusToColor(boxDataFromXML[intersected.name])
+    );
+
+    // Use a for loop to dynamically check and add boxes
+    for (let index = 0; ; index++) {
+      let boxName = index === 0 ? intersectedRow : `${intersectedRow}_${index}`;
       let box = scene.getObjectByName(boxName);
+      console.log("Boxrow:", boxName);
       if (box) {
         boxesInRow.push(box);
-        // Store original color if it hasn't been stored yet
         if (!box.originalColor) {
           box.originalColor = box.material.color.clone();
         }
-        // Optionally change the color, e.g., to indicate hover
-        const palletStatus = boxDataFromXML[box.name];
-        const color = statusToColor(palletStatus); // Assumes statusToColor function is defined
-        box.material.color.set(color);
+        box.material.color.set(statusToColor(boxDataFromXML[box.name]));
+      } else {
+        break; // If no box is found, exit the loop
       }
-    });
+    }
   }
 }
-
 renderer.domElement.addEventListener("mousemove", onMouseMove);

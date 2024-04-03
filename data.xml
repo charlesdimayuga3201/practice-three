@@ -4,38 +4,38 @@
         <warehouse>Mets 4</warehouse>
         <storageType>Storage Dry</storageType>
         <palletContent>Package Cardboard</palletContent>
-        <palletStatus>Full</palletStatus>
+        <palletStatus>Empty</palletStatus>
         
     </box>
     <box class="Box1_1">
         <warehouse>Mets 4</warehouse>
         <storageType>Storage Dry</storageType>
         <palletContent>Package Cardboard</palletContent>
-        <palletStatus>Overload</palletStatus>
+        <palletStatus>Empty</palletStatus>
     </box>
     <box class="Box1_2">
         <warehouse>Mets 4</warehouse>
         <storageType>Storage Dry</storageType>
         <palletContent>Package Cardboard</palletContent>
-        <palletStatus>Full</palletStatus>
+        <palletStatus>Empty</palletStatus>
     </box>
      <box class="Box2">
         <warehouse>Mets 4</warehouse>
         <storageType>Storage Dry</storageType>
         <palletContent>Package Cardboard</palletContent>
-        <palletStatus>Full</palletStatus>
+        <palletStatus>Empty</palletStatus>
     </box>
     <box class="Box2_1">
         <warehouse>Mets 4</warehouse>
         <storageType>Storage Dry</storageType>
         <palletContent>Package Cardboard</palletContent>
-        <palletStatus>Full</palletStatus>
+        <palletStatus>Empty</palletStatus>
     </box>
     <box class="Box2_2">
         <warehouse>Mets 4</warehouse>
         <storageType>Storage Dry</storageType>
         <palletContent>Package Cardboard</palletContent>
-        <palletStatus>Full</palletStatus>
+        <palletStatus>Empty</palletStatus>
     </box>
       <box class="Box3">
         <warehouse>Mets 4</warehouse>
@@ -59,13 +59,13 @@
         <warehouse>Mets 4</warehouse>
         <storageType>Storage Dry</storageType>
         <palletContent>Package Cardboard</palletContent>
-        <palletStatus>Full</palletStatus>
+        <palletStatus>Empty</palletStatus>
     </box>
     <box class="Box4_1">
         <warehouse>Mets 4</warehouse>
         <storageType>Storage Dry</storageType>
         <palletContent>Package Cardboard</palletContent>
-        <palletStatus>Empty</palletStatus>
+        <palletStatus>Full</palletStatus>
     </box>
     <box class="Box4_2">
         <warehouse>Mets 4</warehouse>
@@ -77,7 +77,7 @@
         <warehouse>Mets 4</warehouse>
         <storageType>Storage Dry</storageType>
         <palletContent>Package Cardboard</palletContent>
-        <palletStatus>Full</palletStatus>
+        <palletStatus>Overload</palletStatus>
     </box>
     <box class="Box5_1">
         <warehouse>Mets 4</warehouse>
@@ -102,12 +102,12 @@
         <storageType>Storage Dry</storageType>
         <palletContent>Package Cardboard</palletContent>
         <palletStatus>Overload</palletStatus>
-    </box>
+    </box>  
     <box class="Box6_2">
         <warehouse>Mets 4</warehouse>
         <storageType>Storage Dry</storageType>
         <palletContent>Package Cardboard</palletContent>
-        <palletStatus>Full</palletStatus>
+        <palletStatus>Overload</palletStatus>
     </box>
     
 

@@ -100,20 +100,20 @@
         align-content: center;
         align-self: center;
       }
-      .modal {
-        display: none; /* Hidden by default */
-        position: fixed; /* Stay in place and float above the scene */
-        z-index: 2; /* Sit on top of everything */
+      /* .modal {
+        display: none;
+        position: fixed; 
+        z-index: 2; 
         left: 50%;
         top: 55%;
-        transform: translate(-50%, -50%); /* Center the modal */
-        width: auto; /* Adjust based on content */
-        max-width: 400px; /* Maximum width */
+        transform: translate(-50%, -50%); 
+        width: auto;
+        max-width: 400px; 
         padding: 20px;
         box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
         background-color: #fefefe;
         border-radius: 10px;
-      }
+      } */
       /* .modal-content {
               display: flex;
             } */
@@ -187,23 +187,39 @@
         text-decoration: none;
         cursor: pointer;
       }
+      #webgl-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1; /* Ensure it's above other elements */
+      }
+
+      /* Right panel styles */
+      .modal {
+        position: fixed;
+        top: 0;
+        right: 0;
+        height: 100%;
+        width: 300px; /* Adjust width as needed */
+        background-color: #fefefe;
+        z-index: 2; /* Sit on top of everything except WebGL container */
+        overflow-y: auto; /* Enable vertical scroll */
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.2); /* Add shadow to the left */
+        padding: 20px;
+      }
     </style>
   </head>
   <body>
+    <div id="webgl-container"></div>
+
     <script type="module" src="/main.js"></script>
 
     <div id="infoModal" class="modal">
+      <h1>Mets Warehouse</h1>
+      <h2>Pallet Box Row</h2>
       <div class="modal-content">
-        <!-- <div clas="square_content">
-                <div class="square_p6"></div>
-                <div class="square_p5"></div>
-                <br />
-              </div>
-              <div clas="square_content">
-                <div class="square_p4"></div>
-                <div class="square_p3"></div>
-                <br />
-              </div> -->
         <div class="pallet3"></div>
         <div class="square_content">
           <button id="myBtn3">
@@ -226,7 +242,6 @@
           <br />
         </div>
 
-        <span class="close">&times;</span>
         <p id="modalText">Click the specific Box to show the details...</p>
       </div>
     </div>
@@ -234,132 +249,10 @@
       <div class="modal-box-content">
         <span class="close-second">&times;</span>
 
-        <div class="pallet_content">
-          <!-- <div class="Box1_content">
-            <p>Warehouse:</p>
-            <p>Storage Type:</p>
-            <p>Pallet Content:</p>
-            <p>Pallet Status:</p>
-          </div>
-          <div class="Box2_content">
-            <p>Warehouse:</p>
-            <p>Storage Type:</p>
-            <p>Pallet Content:</p>
-            <p>Pallet Status:</p>
-          </div>
-          <div class="Box3_content">
-            <p>Warehouse:</p>
-            <p>Storage Type:</p>
-            <p>Pallet Content:</p>
-            <p>Pallet Status:</p>
-          </div> -->
-          <!-- <div class="Box4_content">
-                <p>Warehouse: Mets 4</p>
-                <p>Storage Type: Storage Dry</p>
-                <p>Pallet Content: Package Cardboard</p>
-                <p>Pallet Status: Partial</p>
-              </div>
-              <div class="Box5_content">
-                <p>Warehouse: Mets 4</p>
-                <p>Storage Type: Storage Dry</p>
-                <p>Pallet Content: Package Cardboard</p>
-                <p>Pallet Status: Empty</p>
-              </div>
-              <div class="Box6_content">
-                <p>Warehouse: Mets 4</p>
-                <p>Storage Type: Storage Dry</p>
-                <p>Pallet Content: Package Cardboard</p>
-                <p>Pallet Status: Full</p>
-              </div> -->
-        </div>
+        <div class="pallet_content"></div>
       </div>
     </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!--  
-    <script>
-      // Get the modal
-      var modal = document.getElementById("myModal");
-
-      // Get the button that opens the modal
-
-      var btn1 = document.getElementById("myBtn1");
-      var btn2 = document.getElementById("myBtn2");
-      var btn3 = document.getElementById("myBtn3");
-
-      var boxes = document.querySelectorAll(".pallet_content > div");
-
-      var span = document.getElementsByClassName("close-second")[0];
-
-      btn1.onclick = function () {
-        displayBoxInfo("1");
-      };
-      btn2.onclick = function () {
-        displayBoxInfo("1_1");
-      };
-      btn3.onclick = function () {
-        displayBoxInfo("1_2");
-      };
-
-      function displayBoxInfo(id) {
-        var boxContent = document.querySelector(`.Box${id}_content`);
-        if (boxContent) {
-          // Hide all box contents
-          var allBoxContents = document.querySelectorAll(
-            ".pallet_content > div"
-          );
-          allBoxContents.forEach(function (box) {
-            box.style.display = "none";
-          });
-
-          // Show the selected box content
-          boxContent.style.display = "block";
-
-          // Display the modal
-          modal.style.display = "block";
-        }
-      }
-      span.onclick = function () {
-        modal.style.display = "none";
-      };
-
-      window.onclick = function (event) {
-        if (event.target == modal) {
-          modal.style.display = "none";
-        }
-      };
-      $(document).ready(function () {
-        $.ajax({
-          type: "GET",
-          url: "data.xml",
-          dataType: "xml",
-          success: function (xml) {
-            parseXml(xml);
-          },
-        });
-      });
-
-      function parseXml(xml) {
-        $(".pallet_content").empty();
-        console.log(xml);
-        $(xml)
-          .find("box")
-          .each(function () {
-            var id = $(this).attr("id");
-            var warehouse = $(this).find("warehouse").text();
-            var storageType = $(this).find("storageType").text();
-            var palletContent = $(this).find("palletContent").text();
-            var palletStatus = $(this).find("palletStatus").text();
-
-            $(".pallet_content").append(`
-          <div class="Box${id}_content" style="display: none;">
-            <p>Warehouse: ${warehouse}</p>
-            <p>Storage Type: ${storageType}</p>
-            <p>Pallet Content: ${palletContent}</p>
-            <p>Pallet Status: ${palletStatus}</p>
-          </div>
-        `);
-          });
-      }
-    </script> -->
   </body>
 </html>
