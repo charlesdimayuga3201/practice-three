@@ -22,11 +22,11 @@ const loader = new GLTFLoader();
 const dracoLoader = new DRACOLoader();
 dracoLoader.setDecoderPath("/examples/jsm/libs/draco/");
 loader.setDRACOLoader(dracoLoader);
-
+scene.background = new THREE.Color("#dfedf0");
 animation;
 loader.load(
   // resource URL
-  "/bmet4racks.glb",
+  "/bmetrack.glb",
   // called when the resource is loaded
   function (gltf) {
     // const root = gltf.scene;
@@ -170,7 +170,6 @@ function updateHTMLSquaresForBox(boxName) {
   for (let i = 0; i < 3; i++) {
     boxesToHandle.push(i === 0 ? baseBoxName : `${baseBoxName}_${i}`);
   }
-
   // Update modal text using jQuery
   $("#modalText").text(
     "Modal should be shown now, name: " + boxesToHandle.join(", ")
@@ -181,22 +180,70 @@ function updateHTMLSquaresForBox(boxName) {
     let status = boxDataFromXML[name]; // Assuming you have a way to get the box's status
     let color = statusToColor(status); // Convert status to color
     console.log("Status Color: " + color);
-
-    // Assign onclick and onmouseover for each button using jQuery
+    $(`#myBtn${index + 1}`).off("mouseenter mouseleave click");
     $(`#myBtn${index + 1}`)
-      .off("click mouseover mouseout") // Remove previous event handlers to prevent duplication
-      .on("click", function () {
-        displayBoxInfo(name);
-      })
-      .on("mouseover", function () {
+      .on("mouseenter", (event) => {
         const box = scene.getObjectByName(name);
-        console.log("Object: " + name, "Color: " + color);
+        // displayBoxInfo(name);
+        box.material.color.set(color);
+        scene.traverse((obj) => {
+          if (obj.name.startsWith("Box") && obj.name !== name) {
+            console.log("Test: ", obj.name);
+            obj.material.transparent = true;
+            obj.material.opacity = 0.2;
+            obj.material.needsUpdate = true;
+            // obj.material.opacity = 0.1;
+            // obj.material.opacity = 0.2;
+          }
+
+          // console.log(obj.name, name);
+        });
+      })
+      .on("click", (event) => {
+        displayBoxInfo(name);
+        const box = scene.getObjectByName(name);
+        // displayBoxInfo(name);
         box.material.color.set(color);
       })
-      .on("mouseout", function () {
+      .on("mouseleave", (event) => {
         const box = scene.getObjectByName(name);
         box.material.color.set("black");
+        scene.traverse((obj) => {
+          if (obj.name.startsWith("Box")) {
+            obj.material.transparent = false;
+            obj.material.opacity = 1;
+            obj.material.needsUpdate = true;
+            // obj.material.opacity = 0.1;
+            // obj.material.opacity = 0.2;
+          }
+        });
       });
+    // Assign onclick and onmouseover for each button using jQuery
+    // $(".test")
+    //   .off("click mouseover mouseout") // Remove previous event handlers to prevent duplication
+    //   .on("click", function () {
+    //     displayBoxInfo(name);
+    //   })
+    //   .on("mouseover", function () {
+    //     const box = scene.getObjectByName(name);
+    //     console.log(box);
+
+    //     console.log(name);
+
+    //     scene.traverse((obj) => {
+    //       if (obj.name === name) {
+    //         console.log(obj);
+    //         // obj.material.opacity = 0.2;
+    //       }
+    //     });
+
+    //     console.log("Object: " + name, "Color: " + color);
+    //     box.material.color.set(color);
+    //   })
+    //   .on("mouseout", function () {
+    //     const box = scene.getObjectByName(name);
+    //     box.material.color.set("black");
+    //   });
 
     console.log(
       "Status: " + status,
@@ -223,7 +270,7 @@ function statusToColor(status) {
   }
 }
 
-var modal = document.getElementById("myModal");
+var modal = document.getElementById("infoModal");
 var span = document.getElementsByClassName("close-second")[0];
 
 function displayBoxInfo(classname) {
@@ -361,9 +408,6 @@ function parseXml(xml) {
 
 // MULTIPLE HOVER
 
-let hoveredObj = null;
-
-let boxesInRow = [];
 // function onMouseMove(event) {
 //   mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
 //   mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
@@ -431,6 +475,9 @@ let boxesInRow = [];
 // }
 
 // For Looop
+let hoveredObj = null;
+let boxesInRow = [];
+const originalColors = {};
 function onMouseMove(event) {
   mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
   mouse.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1;
@@ -443,59 +490,51 @@ function onMouseMove(event) {
     intersect.object.name.startsWith(validBoxPrefix)
   );
 
-  if (hoveredObj) {
-    if (
-      !filteredIntersects.length ||
-      !boxesInRow.includes(filteredIntersects[0].object)
-    ) {
-      boxesInRow.forEach((box) => {
-        if (box.originalColor) box.material.color.copy(box.originalColor);
-      });
-      boxesInRow = [];
-      hoveredObj = null;
-    }
+  // Check if previously hovered object is not in the current hover
+  if (
+    hoveredObj &&
+    (!filteredIntersects.length || filteredIntersects[0].object !== hoveredObj)
+  ) {
+    // Reset all boxes in the row to their original color
+    scene.traverse((obj) => {
+      if (obj.name.startsWith("Box") && obj.name.startsWith("Box")) {
+        obj.material.color.set(originalColors[obj.name]);
+        obj.material.transparent = false;
+        obj.material.opacity = 1;
+        obj.material.needsUpdate = true;
+      }
+    });
+    hoveredObj = null;
+    boxesInRow = [];
   }
 
-  if (
-    filteredIntersects.length > 0 &&
-    (!hoveredObj || !boxesInRow.includes(filteredIntersects[0].object))
-  ) {
+  if (filteredIntersects.length > 0) {
     const intersected = filteredIntersects[0].object;
 
+    // Detect if the hovered object has changed
     if (hoveredObj !== intersected) {
-      boxesInRow.forEach((box) => {
-        if (box.originalColor) box.material.color.copy(box.originalColor);
-      });
+      hoveredObj = intersected;
+
       boxesInRow = [];
-    }
+      var intersectedRow = intersected.name.split("_")[0];
 
-    hoveredObj = intersected;
-    var intersectedRow = intersected.name.split("_")[0];
+      // Apply new hover effects
+      scene.traverse((obj) => {
+        if (obj.name.startsWith(intersectedRow)) {
+          if (!originalColors[obj.name]) {
+            originalColors[obj.name] = obj.material.color.clone();
+          }
 
-    // Assuming intersectedRow itself should be included
-    boxesInRow.push(intersected);
-    if (!intersected.originalColor) {
-      intersected.originalColor = intersected.material.color.clone();
-    }
-    intersected.material.color.set(
-      statusToColor(boxDataFromXML[intersected.name])
-    );
-
-    // Use a for loop to dynamically check and add boxes
-    for (let index = 0; ; index++) {
-      let boxName = index === 0 ? intersectedRow : `${intersectedRow}_${index}`;
-      let box = scene.getObjectByName(boxName);
-      console.log("Boxrow:", boxName);
-      if (box) {
-        boxesInRow.push(box);
-        if (!box.originalColor) {
-          box.originalColor = box.material.color.clone();
+          obj.material.color.set(statusToColor(boxDataFromXML[obj.name]));
+          boxesInRow.push(obj);
+        } else if (obj.name.startsWith("Box")) {
+          obj.material.transparent = true;
+          obj.material.opacity = 0.2;
+          obj.material.needsUpdate = true;
         }
-        box.material.color.set(statusToColor(boxDataFromXML[box.name]));
-      } else {
-        break; // If no box is found, exit the loop
-      }
+      });
     }
   }
 }
+
 renderer.domElement.addEventListener("mousemove", onMouseMove);
